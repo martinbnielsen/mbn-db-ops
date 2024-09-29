@@ -27,7 +27,7 @@ exception
 
     APEX_UTIL.CREATE_USER(
             p_user_name                     => 'DBOPS',
-            p_web_password                  => 'DbOps123',
+            p_web_password                  => '&1',
             p_description                   => 'DBOPS Admin user',
             p_developer_privs               => 'ADMIN:CREATE:DATA_LOADER:EDIT:HELP:MONITOR:SQL',
             p_default_schema                => 'DBOPS',
