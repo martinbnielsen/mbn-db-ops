@@ -4,7 +4,7 @@ create user dbops identified by &1;
 grant connect, resource to dbops;
 grant administer database trigger to dbops;
 grant select on dba_objects to dbops;
-
+alter user dbops quota 100M on users;
 
 -- APEX workspace
 declare

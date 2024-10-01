@@ -1,26 +1,48 @@
 create or replace package body dbops_lock_pkg is
 
   cursor c_lock (
-    p_schema_name in dbops_locks.owner%TYPE, 
+    p_owner       in dbops_locks.owner%TYPE, 
     p_object_type in dbops_locks.object_type%TYPE, 
     p_object_name in dbops_locks.object_name%TYPE
   ) is
     select *
     from dbops_locks
-    where owner = p_schema_name
+    where owner = p_owner
     and object_type = p_object_type
     and object_name = p_object_name;
 
   function get_user return varchar2 is
     l_user dbops_locks.locked_by%type;
   begin
-    l_user := coalesce(sys_context('APEX$SESSION','APP_USER'),user);
-    return l_user;
+    l_user := coalesce(sys_context('APEX$SESSION','APP_USER'),sys_context('USERENV','OS_USER'), user);
+    return upper(l_user);
   end get_user;
 
 
+
+  function is_object_locked(
+    p_owner       in dbops_locks.owner%TYPE, 
+    p_object_type in dbops_locks.object_type%TYPE, 
+    p_object_name in dbops_locks.object_name%TYPE
+  ) return dbops_locks.locked_by%TYPE is
+    l_locked_rec c_lock%rowtype;
+  begin
+    open c_lock(p_owner, p_object_type, p_object_name);
+    fetch c_lock into l_locked_rec;
+    close c_lock;
+
+    if l_locked_rec.locked_by is not null then
+      return l_locked_rec.locked_by;
+    else
+      return null;
+    end if;
+  end is_object_locked;
+
+
+
+
   procedure lock_object(
-    p_schema_name in dbops_locks.owner%TYPE, 
+    p_owner       in dbops_locks.owner%TYPE, 
     p_object_type in dbops_locks.object_type%TYPE, 
     p_object_name in dbops_locks.object_name%TYPE
   ) is
@@ -28,7 +50,7 @@ create or replace package body dbops_lock_pkg is
     l_locked_rec c_lock%rowtype;
   begin
     -- Check for existing locks
-    open c_lock(p_schema_name, p_object_type, p_object_name);
+    open c_lock(p_owner, p_object_type, p_object_name);
     fetch c_lock into l_locked_rec;
     close c_lock;
 
@@ -38,7 +60,7 @@ create or replace package body dbops_lock_pkg is
 
     -- Create the lock
     insert into dbops_locks (owner, object_type, object_name, locked_by, locked_on)
-    values (p_schema_name, p_object_type, p_object_name, get_user, localtimestamp);
+    values (p_owner, p_object_type, p_object_name, get_user, localtimestamp);
 
   exception
       when others then
@@ -46,14 +68,14 @@ create or replace package body dbops_lock_pkg is
   end lock_object;
 
   procedure release_object(
-    p_schema_name in dbops_locks.owner%TYPE, 
+    p_owner in dbops_locks.owner%TYPE, 
     p_object_type in dbops_locks.object_type%TYPE, 
     p_object_name in dbops_locks.object_name%TYPE
   ) is
     l_user dbops_locks.locked_by%type := get_user();
     l_locked_rec c_lock%rowtype;
   begin
-    open c_lock(p_schema_name, p_object_type, p_object_name);
+    open c_lock(p_owner, p_object_type, p_object_name);
     fetch c_lock into l_locked_rec;
     close c_lock;
 
