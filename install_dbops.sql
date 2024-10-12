@@ -1,4 +1,5 @@
 -- create tables
+drop trigger dbopb_before_alter_trg;
 drop table dbops_schemas;
 drop table dbops_locks;
 
@@ -10,6 +11,7 @@ create table dbops_locks (
     object_name    varchar2(128 char) not null,
     locked_on      timestamp,
     locked_by      varchar2(255 char),
+    notes          clob,
     created        timestamp not null,
     created_by     varchar2(255 char) not null,
     updated        timestamp not null,
@@ -87,4 +89,8 @@ schemas
 @dbops_lock_pkg.plb
 
 -- Triggers
-@dbops_before_alter_trg.sql
+@dbopb_before_alter_trg.sql
+
+-- Grants
+grant execute on dbops_lock_pkg to public;
+create or replace public synonym dbops_lock_pkg for dbops.dbops_lock_pkg;
