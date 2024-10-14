@@ -28,7 +28,7 @@ prompt APPLICATION 100 - DBOPS
 -- Application Export:
 --   Application:     100
 --   Name:            DBOPS
---   Date and Time:   19:22 Saturday October 12, 2024
+--   Date and Time:   19:54 Monday October 14, 2024
 --   Exported By:     DBOPS
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -41,8 +41,8 @@ prompt APPLICATION 100 - DBOPS
 --       Dynamic Actions:         10
 --     Shared Components:
 --       Logic:
---         Items:                  1
---         Computations:           1
+--         Items:                  2
+--         Computations:           2
 --         App Settings:           1
 --         Build Options:          4
 --       Navigation:
@@ -65,7 +65,7 @@ prompt APPLICATION 100 - DBOPS
 --           Breadcrumb:           1
 --           Button:               3
 --           Report:              12
---         LOVs:                   3
+--         LOVs:                   4
 --       PWA:
 --       Globalization:
 --       Reports:
@@ -122,7 +122,7 @@ wwv_flow_imp.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'DBOPS - Database Operation Tool'
 ,p_last_updated_by=>'DBOPS'
-,p_last_upd_yyyymmddhh24miss=>'20241012192052'
+,p_last_upd_yyyymmddhh24miss=>'20241014195335'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>4
 ,p_print_server_type=>'NATIVE'
@@ -175,6 +175,14 @@ wwv_flow_imp_shared.create_list(
  p_id=>wwv_flow_imp.id(5766385877130754)
 ,p_name=>'Navigation Bar'
 ,p_list_status=>'PUBLIC'
+);
+wwv_flow_imp_shared.create_list_item(
+ p_id=>wwv_flow_imp.id(7398367506285526)
+,p_list_item_display_sequence=>2
+,p_list_item_link_text=>'&DBOPS_DATABASE.'
+,p_list_item_link_target=>'#'
+,p_list_item_icon=>'fa-database'
+,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_imp_shared.create_list_item(
  p_id=>wwv_flow_imp.id(5799816443231663)
@@ -747,6 +755,15 @@ begin
 null;
 end;
 /
+prompt --application/shared_components/logic/application_items/dbops_database
+begin
+wwv_flow_imp_shared.create_flow_item(
+ p_id=>wwv_flow_imp.id(7397167941271852)
+,p_name=>'DBOPS_DATABASE'
+,p_protection_level=>'I'
+);
+end;
+/
 prompt --application/shared_components/logic/application_items/dbops_is_admin
 begin
 wwv_flow_imp_shared.create_flow_item(
@@ -767,6 +784,20 @@ wwv_flow_imp_shared.create_flow_computation(
 ,p_computation_language=>'PLSQL'
 ,p_computation_processed=>'REPLACE_EXISTING'
 ,p_computation=>'dbops_lock_pkg.is_admin()'
+);
+end;
+/
+prompt --application/shared_components/logic/application_computations/dbops_database
+begin
+wwv_flow_imp_shared.create_flow_computation(
+ p_id=>wwv_flow_imp.id(7397412534278053)
+,p_computation_sequence=>10
+,p_computation_item=>'DBOPS_DATABASE'
+,p_computation_point=>'ON_NEW_INSTANCE'
+,p_computation_type=>'EXPRESSION'
+,p_computation_language=>'PLSQL'
+,p_computation_processed=>'REPLACE_EXISTING'
+,p_computation=>'SYS_CONTEXT(''userenv'', ''db_name'')'
 );
 end;
 /
@@ -834,7 +865,28 @@ wwv_flow_imp_shared.create_list_of_values(
 ,p_lov_query=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'select owner d, owner r',
 'from dbops_schemas',
-'group by owner',
+'where enabled_flag = ''Y''',
+'order by 1'))
+,p_source_type=>'SQL'
+,p_location=>'LOCAL'
+,p_use_local_sync_table=>false
+,p_return_column_name=>'R'
+,p_display_column_name=>'D'
+,p_group_sort_direction=>'ASC'
+,p_default_sort_direction=>'ASC'
+);
+end;
+/
+prompt --application/shared_components/user_interface/lovs/schemas_all
+begin
+wwv_flow_imp_shared.create_list_of_values(
+ p_id=>wwv_flow_imp.id(7196846934209915)
+,p_lov_name=>'SCHEMAS_ALL'
+,p_lov_query=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'select username d, username r',
+'from dba_users',
+'where oracle_maintained = ''N''',
+'and username != ''DBOPS''',
 'order by 1'))
 ,p_source_type=>'SQL'
 ,p_location=>'LOCAL'
@@ -14635,7 +14687,7 @@ wwv_flow_imp_page.create_page(
 ,p_protection_level=>'C'
 ,p_page_component_map=>'13'
 ,p_last_updated_by=>'DBOPS'
-,p_last_upd_yyyymmddhh24miss=>'20241012192052'
+,p_last_upd_yyyymmddhh24miss=>'20241014194750'
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(5777409993130779)
@@ -15341,7 +15393,7 @@ wwv_flow_imp_page.create_page_item(
 ,p_lov=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'select owner d, owner r',
 'from dbops_schemas',
-'group by owner',
+'where enabled_flag = ''Y''',
 'order by 1'))
 ,p_lov_display_null=>'YES'
 ,p_lov_null_text=>'[Select Owner]'
@@ -16328,7 +16380,7 @@ wwv_flow_imp_page.create_page(
 ,p_protection_level=>'C'
 ,p_page_component_map=>'21'
 ,p_last_updated_by=>'DBOPS'
-,p_last_upd_yyyymmddhh24miss=>'20241012175029'
+,p_last_upd_yyyymmddhh24miss=>'20241014194055'
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(5800871903248615)
@@ -16402,7 +16454,7 @@ wwv_flow_imp_page.create_region_column(
 ,p_is_required=>true
 ,p_max_length=>128
 ,p_lov_type=>'SHARED'
-,p_lov_id=>wwv_flow_imp.id(5812235883282449)
+,p_lov_id=>wwv_flow_imp.id(7196846934209915)
 ,p_lov_display_extra=>true
 ,p_lov_display_null=>true
 ,p_lov_null_text=>'[Select Schema]'

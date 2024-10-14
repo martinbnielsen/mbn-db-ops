@@ -94,3 +94,5 @@ schemas
 -- Grants
 grant execute on dbops_lock_pkg to public;
 create or replace public synonym dbops_lock_pkg for dbops.dbops_lock_pkg;
+
+exit;
