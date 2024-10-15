@@ -156,5 +156,14 @@ create or replace package body dbops_lock_pkg is
   end;
 
 
+  function is_reader return varchar2 is
+  begin
+    if apex_acl.has_user_role (p_role_static_id  => 'READER' ) then
+      return('Y');
+    else
+      return('N');
+    end if;
+  end;
+
 end dbops_lock_pkg;
 /

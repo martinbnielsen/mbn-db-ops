@@ -28,7 +28,7 @@ prompt APPLICATION 100 - DBOPS
 -- Application Export:
 --   Application:     100
 --   Name:            DBOPS
---   Date and Time:   19:54 Monday October 14, 2024
+--   Date and Time:   18:36 Tuesday October 15, 2024
 --   Exported By:     DBOPS
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -41,8 +41,8 @@ prompt APPLICATION 100 - DBOPS
 --       Dynamic Actions:         10
 --     Shared Components:
 --       Logic:
---         Items:                  2
---         Computations:           2
+--         Items:                  3
+--         Computations:           3
 --         App Settings:           1
 --         Build Options:          4
 --       Navigation:
@@ -122,7 +122,7 @@ wwv_flow_imp.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'DBOPS - Database Operation Tool'
 ,p_last_updated_by=>'DBOPS'
-,p_last_upd_yyyymmddhh24miss=>'20241014195335'
+,p_last_upd_yyyymmddhh24miss=>'20241015183141'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>4
 ,p_print_server_type=>'NATIVE'
@@ -773,6 +773,15 @@ wwv_flow_imp_shared.create_flow_item(
 );
 end;
 /
+prompt --application/shared_components/logic/application_items/dbops_is_reader
+begin
+wwv_flow_imp_shared.create_flow_item(
+ p_id=>wwv_flow_imp.id(7599461076163328)
+,p_name=>'DBOPS_IS_READER'
+,p_protection_level=>'I'
+);
+end;
+/
 prompt --application/shared_components/logic/application_computations/dbops_is_admin
 begin
 wwv_flow_imp_shared.create_flow_computation(
@@ -784,6 +793,20 @@ wwv_flow_imp_shared.create_flow_computation(
 ,p_computation_language=>'PLSQL'
 ,p_computation_processed=>'REPLACE_EXISTING'
 ,p_computation=>'dbops_lock_pkg.is_admin()'
+);
+end;
+/
+prompt --application/shared_components/logic/application_computations/dbops_is_reader
+begin
+wwv_flow_imp_shared.create_flow_computation(
+ p_id=>wwv_flow_imp.id(7599785519181269)
+,p_computation_sequence=>10
+,p_computation_item=>'DBOPS_IS_READER'
+,p_computation_point=>'AFTER_LOGIN'
+,p_computation_type=>'EXPRESSION'
+,p_computation_language=>'PLSQL'
+,p_computation_processed=>'REPLACE_EXISTING'
+,p_computation=>'dbops_lock_pkg.is_reader()'
 );
 end;
 /
@@ -14687,7 +14710,7 @@ wwv_flow_imp_page.create_page(
 ,p_protection_level=>'C'
 ,p_page_component_map=>'13'
 ,p_last_updated_by=>'DBOPS'
-,p_last_upd_yyyymmddhh24miss=>'20241014194750'
+,p_last_upd_yyyymmddhh24miss=>'20241015183141'
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(5777409993130779)
@@ -14725,7 +14748,7 @@ wwv_flow_imp_page.create_page_plug(
 '       UPDATED,',
 '       UPDATED_BY,',
 '       case when locked_by = :APP_USER then ''Y'' else ''N'' end my_lock,',
-'       case when locked_by = :APP_USER or :DBOPS_IS_ADMIN = ''Y'' then ''UD'' else null end allowed_operations',
+'       case when (locked_by = :APP_USER or :DBOPS_IS_ADMIN = ''Y'') and nvl(:DBOPS_IS_READER,''N'') = ''N'' then ''UD'' else null end allowed_operations',
 '  from DBOPS_LOCKS'))
 ,p_plug_source_type=>'NATIVE_IG'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
@@ -15398,6 +15421,9 @@ wwv_flow_imp_page.create_page_item(
 ,p_lov_display_null=>'YES'
 ,p_lov_null_text=>'[Select Owner]'
 ,p_cHeight=>1
+,p_read_only_when=>'DBOPS_IS_READER'
+,p_read_only_when2=>'Y'
+,p_read_only_when_type=>'VAL_OF_ITEM_IN_COND_EQ_COND2'
 ,p_field_template=>wwv_flow_imp.id(5738640210130740)
 ,p_item_template_options=>'#DEFAULT#'
 ,p_lov_display_extra=>'NO'
@@ -15425,6 +15451,9 @@ wwv_flow_imp_page.create_page_item(
 ,p_ajax_optimize_refresh=>'Y'
 ,p_cHeight=>1
 ,p_begin_on_new_line=>'N'
+,p_read_only_when=>'DBOPS_IS_READER'
+,p_read_only_when2=>'Y'
+,p_read_only_when_type=>'VAL_OF_ITEM_IN_COND_EQ_COND2'
 ,p_field_template=>wwv_flow_imp.id(5738640210130740)
 ,p_item_template_options=>'#DEFAULT#'
 ,p_lov_display_extra=>'NO'
@@ -15450,6 +15479,9 @@ wwv_flow_imp_page.create_page_item(
 ,p_ajax_optimize_refresh=>'Y'
 ,p_cSize=>30
 ,p_begin_on_new_line=>'N'
+,p_read_only_when=>'DBOPS_IS_READER'
+,p_read_only_when2=>'Y'
+,p_read_only_when_type=>'VAL_OF_ITEM_IN_COND_EQ_COND2'
 ,p_field_template=>wwv_flow_imp.id(5738640210130740)
 ,p_item_template_options=>'#DEFAULT#'
 ,p_lov_display_extra=>'YES'

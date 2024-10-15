@@ -29,5 +29,7 @@ create or replace package dbops_lock_pkg is
 
 function is_admin return varchar2;
 
+function is_reader return varchar2;
+
 end dbops_lock_pkg;
 /
