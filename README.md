@@ -2,6 +2,8 @@
 
 The purpose of db-ops is to deliver tools that eases development and operations in the Oracle database development space.
 
+The tools in this repository are open source and free to use. For feedback, questions or suggestions, please create an issue in the repository.
+
 ### Database object locking
 When multiple developers are working with the same database objects, there is a danger of one developer overwrting the changes of another developer. To avoid this, db-ops provides a locking mechanism that allows developers to lock database objects while they are working on them. This way, other developers will be notified that the object is locked and who has locked it.
 
