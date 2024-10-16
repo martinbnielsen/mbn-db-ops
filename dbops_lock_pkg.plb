@@ -1,15 +1,5 @@
 create or replace package body dbops_lock_pkg is
 
-  cursor c_lock (
-    p_owner       in dbops_locks.owner%TYPE, 
-    p_object_type in dbops_locks.object_type%TYPE, 
-    p_object_name in dbops_locks.object_name%TYPE
-  ) is
-    select *
-    from dbops_locks
-    where owner = upper(p_owner)
-    and object_type = upper(p_object_type)
-    and object_name = upper(p_object_name);
 
   function get_user return varchar2 is
     l_user dbops_locks.locked_by%type;

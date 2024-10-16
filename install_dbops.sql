@@ -84,9 +84,10 @@ schemas
 
 */
 
--- PLSQL packages
+-- PLSQL packages and procedures
 @dbops_lock_pkg.pls
 @dbops_lock_pkg.plb
+@dbops_admin_release_object.prc
 
 -- Triggers
 @dbopb_before_alter_trg.sql
