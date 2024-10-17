@@ -1,6 +1,13 @@
 create or replace package body dbops_lock_pkg is
 
 
+  /**
+  * Fetch current user from APEX or database session
+  *
+  * @return Current authenticated user
+  *
+  * @example select dbops_lock_pkg.get_user from dual;
+  */
   function get_user return varchar2 is
     l_user dbops_locks.locked_by%type;
   begin
@@ -9,7 +16,16 @@ create or replace package body dbops_lock_pkg is
   end get_user;
 
 
-
+/**
+* Check if an object is locked
+*
+* @param p_object_type  Object type (PACKAGE, PACKAGE BODY, TABLE, VIEW, etc)
+* @param p_object_name  Name of the object
+* @param p_owner        Owner of the object (defaults to current schema) 
+* @return NULL if object is not locked, otherwise the user who locked it
+*
+* @example select dbops_lock_pkg.is_object_locked('PROCEDURE', 'MY_PROCEDURE') from dual;
+*/
   function is_object_locked(
     p_object_type in dbops_locks.object_type%TYPE, 
     p_object_name in dbops_locks.object_name%TYPE,
@@ -30,7 +46,20 @@ create or replace package body dbops_lock_pkg is
 
 
 
+  /**
+  * Lock a database object
+  *
+  * @param p_object_type  Object type (PACKAGE, PACKAGE BODY, TABLE, VIEW, etc)
+  * @param p_object_name  Name of the object
+  * @param p_notes        Optional notes
+  * @param p_owner        Owner of the object (defaults to current schema) 
+  *
+  * @throws -20000 Schema not supported
+  * @throws -20001 Object is already locked
+  * @throws -20002 Object does not exist
 
+  * @example exec dbops_lock_pkg.lock_object('PROCEDURE', 'MY_PROCEDURE', 'Testing locking');
+  */
   procedure lock_object(
     p_object_type in dbops_locks.object_type%TYPE, 
     p_object_name in dbops_locks.object_name%TYPE,
@@ -71,7 +100,7 @@ create or replace package body dbops_lock_pkg is
     and owner = upper(p_owner);
 
     if l_found = 0 then
-      raise_application_error(-20001, 'Object ' || p_owner || '.' || p_object_name || ' of type ' || p_object_type || ' does not exist');
+      raise_application_error(-20002, 'Object ' || p_owner || '.' || p_object_name || ' of type ' || p_object_type || ' does not exist');
     end if;
 
     -- Create the lock

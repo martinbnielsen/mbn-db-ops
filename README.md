@@ -77,6 +77,8 @@ DBOPS> @install_dbops.sql
 
 ## Full API documentation
 
+[DBOPS_LOCK_PKG](dbops_lock_pkg.md)
+
 ## The APEX application
 
 
