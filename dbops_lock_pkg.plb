@@ -54,9 +54,10 @@ create or replace package body dbops_lock_pkg is
   * @param p_notes        Optional notes
   * @param p_owner        Owner of the object (defaults to current schema) 
   *
-  * @throws -20000 Schema not supported
-  * @throws -20001 Object is already locked
-  * @throws -20002 Object does not exist
+  * @throws 
+  * -20000 Schema not supported
+  * -20001 Object is already locked
+  * -20002 Object does not exist
 
   * @example exec dbops_lock_pkg.lock_object('PROCEDURE', 'MY_PROCEDURE', 'Testing locking');
   */

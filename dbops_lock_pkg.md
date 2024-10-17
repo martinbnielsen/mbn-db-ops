@@ -121,9 +121,9 @@ exec dbops_lock_pkg.lock_object('PROCEDURE', 'MY_PROCEDURE', 'Testing locking');
 ```
 
 ### Thrown exceptions
-*throws* -20000 Schema not supported
-*throws* -20001 Object is already locked
-*throws* -20002 Object does not exist
+*throws* -20000 Schema not supported<br />
+-20001 Object is already locked<br />
+-20002 Object does not exist
 
 
  
