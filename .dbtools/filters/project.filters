@@ -1,0 +1,40 @@
+/* Comma separated list of predicates to be fine-tuned for individual project. 
+   Run 
+       project export -debug 
+   to double check the dictionary queries 
+   with internal and custom filters applied. 
+*/
+
+
+-- Uncomment the line below if don't want to export grants:
+-- export_type not in ('ALL_TAB_PRIVS','USER_SYS_PRIVS'),
+/** Reference list of export_types from internal.fixed.filters 
+   'ALL_OBJECTS',
+   'APEX_APPLICATION', 
+   'ALL_TAB_PRIVS',
+   'USER_SYS_PRIVS',
+   'CREATE_USER', 
+   'ORDS_SCHEMA' 
+*/    
+
+-- Liquibase Tables
+object_type != 'TABLE' or object_name not in ('DATABASECHANGELOG',
+                                              'DATABASECHANGELOGLOCK',
+                                              'DATABASECHANGELOG_ACTIONS'
+                                              ),
+not (object_type = 'VIEW'    and object_name ='DATABASECHANGELOG_DETAILS'),
+not (object_type = 'TRIGGER' and object_name ='DATABASECHANGELOG_ACTIONS_TRG'),
+
+
+-- DM generated tables
+not (object_type = 'TABLE' and object_name like 'DM$%' ),
+not (object_type = 'VIEW' and object_name like 'DM$V%' ),
+
+-- ORDS export is disabled by default
+export_type not in ('ORDS_SCHEMA', 'CREATE_USER'),
+
+-- Export APEX application only:
+-- export_type = 'APEX_APPLICATION',
+
+-- Exclude certain database object types:
+-- object_type not in ('CONTEXT', 'SCHEDULE'),   -- trailing comma is optional      

@@ -1,0 +1,50 @@
+{
+  "project" : "db-tools",
+  "sqlcl" : {
+    "connectionName" : "",
+    "version" : "24.3.2.0"
+  },
+  "schemas" : [ "DBOPS" ],
+  "lastReleaseVersion" : "",
+  "export" : {
+    "format" : {
+      "enable" : true
+    },
+    "setTransform" : {
+      "collationClause" : "NEVER",
+      "constraints" : true,
+      "constraintsAsAlter" : true,
+      "emitSchema" : true,
+      "force" : true,
+      "partitioning" : false,
+      "segmentAttributes" : false,
+      "sizeByteKeyword" : true,
+      "sqlterminator" : true,
+      "storage" : false,
+      "tablespace" : false
+    },
+    "apex" : {
+      "exptype" : [ "READABLE_YAML", "APPLICATION_SOURCE" ],
+      "expAclAssignments" : false,
+      "expComments" : false,
+      "skipExportDate" : false,
+      "expirNotif" : false,
+      "expOriginalIds" : false,
+      "expSavedReports" : false,
+      "expPubReports" : false,
+      "expSubscriptions" : false,
+      "expSupportingObjects" : "N",
+      "expTranslations" : false,
+      "auditType" : "NULL"
+    }
+  },
+  "git" : {
+    "protectedBranches" : [ "main", "master" ],
+    "defaultBranch" : "main"
+  },
+  "stage" : {
+    "excludeObjects" : [ "ALL.user" ],
+    "softObjectIsolation" : "release",
+    "changeLogSortOrder" : [ "USER", "TYPE_SPECS", "TYPE_BODY", "SEQUENCE", "DIRECTORY", "CLUSTER", "TABLE", "MATERIALIZED_VIEW_LOG", "MATERIALIZED_VIEW", "VIEW", "REF_CONSTRAINT", "COMMENT", "DIMENSION", "PACKAGE_SPECS", "FUNCTION", "PROCEDURE", "DB_LINK", "SYNONYM", "INDEX", "TRIGGER", "PACKAGE_BODIES", "JOB", "PUBLIC_SYNONYM", "OBJECT_GRANT", "CODE" ]
+  }
+}
