@@ -1,6 +1,7 @@
 create or replace trigger dbopb_before_alter_trg
   before create or alter or drop
   on database
+  when (ora_dict_obj_owner != 'DBOPS')
   declare
     l_user      varchar2(200) := dbops_lock_pkg.get_user();
     l_locked_by dbops_locks.locked_by%type;
